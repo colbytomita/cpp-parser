@@ -117,8 +117,8 @@ private:
 class ASTElement : public ASTNode
 {
 public:
-	void setType(string type);
+	void setValue(string value);
 	void print(int depth);
 private:
-	string type;
+	string value;
 };

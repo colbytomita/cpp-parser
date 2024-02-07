@@ -1,6 +1,7 @@
 name(float x, float y, float z)
 {
-
+    s = x;
+    s = (x);
 }
 
 name2()

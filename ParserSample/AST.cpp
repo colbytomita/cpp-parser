@@ -37,6 +37,11 @@ void ASTStatements::addStatement(ASTStatement* stmt)
 	statements.push_back(stmt);
 }
 
+void ASTStatement::setAssign(ASTAssign* assign_in)
+{
+	assign = assign_in;
+}
+
 void ASTAssign::setLeft(string left_in)
 {
 	left = left_in;
@@ -57,9 +62,9 @@ void ASTFactor::setElement(ASTElement* element_in)
 	element = element_in;
 }
 
-void ASTElement::setType(string type_in)
+void ASTElement::setValue(string value_in)
 {
-	type = type_in;
+	value = value_in;
 }
 
 
@@ -82,7 +87,7 @@ void ASTFunction::print(int depth)
 	params->print(0);
 	cout << ")\n";
 	cout << "{\n";
-	//stmts->print(depth + 1);
+	stmts->print(depth + 1);
 	cout << "}\n";
 }
 
@@ -109,39 +114,38 @@ void ASTStatements::print(int depth)
 }
 
 void ASTStatement::print(int depth)
-{
+{	
 	for (int i = 0; i < depth; i++)
 	{
 		cout << "  ";
 	}
-	cout << "Statement\n";
+	assign->print(depth);
+	cout << ";\n";
 }
 
 void ASTAssign::print(int depth)
 {
-	for (int i = 0; i < depth; i++)
-	{
-		cout << "  ";
-	}
-	cout << "Assign\n";
+	cout << left << " = ";
+	right->print(depth);
 }
 
 void ASTFactor::print(int depth)
 {
-	for (int i = 0; i < depth; i++)
+	if (factor != NULL)
 	{
-		cout << "  ";
+		cout << "(";
+		factor->print(depth);
+		cout << ")";
 	}
-	cout << "Factor\n";
+	else
+	{
+		element->print(depth);
+	}
 }
 
 void ASTElement::print(int depth)
 {
-	for (int i = 0; i < depth; i++)
-	{
-		cout << "  ";
-	}
-	cout << "Element\n";
+	cout << value;
 }
 
 

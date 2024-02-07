@@ -19,6 +19,11 @@ public:
 	ASTProgram* rdpProgram();
 	ASTFunction* rdpFunction();
 	ASTParam* rdpParam();
+	ASTStatements* rdpStatements();
+	ASTStatement* rdpStatement();
+	ASTAssign* rdpAssign();
+	ASTFactor* rdpFactor();
+	ASTElement* rdpElement();
 
 	bool getErrorDetected();
 private:

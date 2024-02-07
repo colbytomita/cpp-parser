@@ -102,7 +102,7 @@ ASTFunction* Parser::rdpFunction()
 
 
 	//this is approximately the function my code has 
-	//theFunction->setStatements(rdpStatements());
+	theFunction->setStatements(rdpStatements());
 
 	if (scan->currentTokenType() == RBRACE)
 	{
@@ -160,3 +160,87 @@ ASTParam* Parser::rdpParam()
 }
 
 //use scan->currentStatus(); to see the scanner's current status (what it is looking at)
+
+ASTStatements* Parser::rdpStatements()	// this gets called after the LBRACE is eaten, the RBRACE gets eaten in the fucntion
+{
+	ASTStatements* stmts = new ASTStatements();
+
+	while (scan->currentTokenType() != RBRACE)
+	{	
+		stmts->addStatement(rdpStatement());
+	}
+	return stmts;
+}
+
+ASTStatement* Parser::rdpStatement() {
+	ASTStatement* stmt = new ASTStatement();
+	stmt->setAssign(rdpAssign());
+	return stmt;
+}
+
+ASTAssign* Parser::rdpAssign() {
+	ASTAssign* assign = new ASTAssign();
+	if (scan->currentTokenType() == STRING) {
+		assign->setLeft(scan->currentTokenString());
+		scan->advance();
+	}
+	else {
+		printError("ASTAssign01", "Expected STRING", scan->getLine());
+		scan->advance();
+	}
+	if (scan->currentTokenType() == EQUALASSIGN) {
+		scan->advance();
+	}
+	else {
+		printError("ASTAssign02", "Expected EQL", scan->getLine());
+		scan->advance();
+	}
+	if (scan->currentTokenType() == STRING || scan->currentTokenType() == LPAREN){
+		assign->setRight(rdpFactor());
+	}
+	else {
+		printError("ASTAssign03", "Expected STRING", scan->getLine());
+		scan->advance();
+	}
+	if (scan->currentTokenType() == SEMI) {
+		scan->advance();
+	}
+	else {
+		printError("ASTAssign04", "Expected SEMI", scan->getLine());
+		scan->advance();
+	}
+	return assign;
+}
+
+ASTFactor* Parser::rdpFactor() {
+	ASTFactor* factor = new ASTFactor();
+	if (scan->currentTokenType() == LPAREN) {
+		scan->advance();
+		factor->setFactor(rdpFactor());
+		if (scan->currentTokenType() == RPAREN) {
+			scan->advance();
+		}
+		else {
+			printError("ASTFactor01", "Expected RPAREN", scan->getLine());
+			scan->advance();
+		}
+	}
+	else
+	{
+		factor->setElement(rdpElement());
+	}
+	return factor;
+}
+
+ASTElement* Parser::rdpElement() {
+	ASTElement* element = new ASTElement();
+	if (scan->currentTokenType() == STRING || scan->currentTokenType() == FLOAT) {
+		element->setValue(scan->currentTokenString());
+		scan->advance();
+	}
+	else {
+		printError("ASTElement01", "Expected STRING or FLOAT", scan->getLine());
+		scan->advance();
+	}
+	return element;
+}
