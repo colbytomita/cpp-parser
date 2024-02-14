@@ -2,6 +2,18 @@ name(float x, float y, float z)
 {
     s = x;
     s = (x);
+    s = (x + y);
+    s = (x + y) * z;
+    if(x > y)
+    {
+        s = x;
+        x = y;
+    }
+    while(x > y)
+    {
+        s = x;
+    }
+
 }
 
 name2()

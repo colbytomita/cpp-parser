@@ -22,8 +22,18 @@ public:
 	ASTStatements* rdpStatements();
 	ASTStatement* rdpStatement();
 	ASTAssign* rdpAssign();
+	ASTBooleanExprA* rdpBooleanExprA();
+	ASTBooleanExprB* rdpBooleanExprB();
+	ASTTerm* rdpTerm();
+	ASTExpr* rdpExpr();
 	ASTFactor* rdpFactor();
 	ASTElement* rdpElement();
+	ASTIf* rdpIf();
+	ASTWhile* rdpWhile();
+	ASTFunctionCall* rdpFunctionCall();
+	ASTArgs* rdpArgs();
+	ASTBlockStatement* rdpBlockStatement();
+	ASTDeclaration* rdpDeclaration();
 
 	bool getErrorDetected();
 private:
