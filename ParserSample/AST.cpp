@@ -369,8 +369,14 @@ void ASTBlockStatement::print(int depth)
 
 void ASTDeclaration::print(int depth)
 {
-	cout << type << " " << name << " = ";
-	value->print(depth);
+	cout << type << " " << name;
+	if (value != NULL)
+	{
+		cout << " = ";
+		value->print(depth);
+
+	}
+	cout << ";\n";
 }
 
 

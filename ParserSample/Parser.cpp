@@ -242,7 +242,6 @@ ASTAssign* Parser::rdpAssign() {
 ASTBooleanExprA* Parser::rdpBooleanExprA() {
 	ASTBooleanExprA* boolA = new ASTBooleanExprA();
 	boolA->setLeftBoolB(rdpBooleanExprB());
-	// scan->advance();
 	if (scan->currentTokenType() == OR || scan->currentTokenType() == AND) {
 		boolA->setOp(scan->currentTokenString());
 		scan->advance();
@@ -254,7 +253,6 @@ ASTBooleanExprA* Parser::rdpBooleanExprA() {
 ASTBooleanExprB* Parser::rdpBooleanExprB() {
 	ASTBooleanExprB* boolB = new ASTBooleanExprB();
 	boolB->setLeftTerm(rdpTerm());
-	// scan->advance();
 	if (scan->currentTokenType() == EE || scan->currentTokenType() == GR || scan->currentTokenType() == GRE) {
 		boolB->setOp(scan->currentTokenString());
 		scan->advance();
@@ -266,7 +264,6 @@ ASTBooleanExprB* Parser::rdpBooleanExprB() {
 ASTTerm* Parser::rdpTerm() {
 	ASTTerm* term = new ASTTerm();
 	term->setLeftExpr(rdpExpr());
-	// scan->advance();
 	if (scan->currentTokenType() == PLUS || scan->currentTokenType() == MINUS) {
 		term->setOp(scan->currentTokenString());
 		scan->advance();
@@ -278,7 +275,6 @@ ASTTerm* Parser::rdpTerm() {
 ASTExpr* Parser::rdpExpr() {
 	ASTExpr* expr = new ASTExpr();
 	expr->setLeftFactor(rdpFactor());
-	// scan->advance();
 	if (scan->currentTokenType() == MULTIPLY || scan->currentTokenType() == DIVIDE || scan->currentTokenType() == MOD) {
 		expr->setOp(scan->currentTokenString());
 		scan->advance();
@@ -437,25 +433,36 @@ ASTDeclaration* Parser::rdpDeclaration() {
 		scan->advance();
 	}
 	else {
-		printError("ASTDeclaration01", "Expected STRING", scan->getLine());
+		printError("ASTDeclaration01", "Expected STRING of type", scan->getLine());
 		scan->advance();
 	}
 	if (scan->currentTokenType() == STRING) {
 		decl->setName(scan->currentTokenString());
 		scan->advance();
+		
 	}
 	else {
-		printError("ASTDeclaration02", "Expected STRING", scan->getLine());
+		printError("ASTDeclaration02", "Expected STRING of variable name", scan->getLine());
 		scan->advance();
 	}
 	if (scan->currentTokenType() == EQUALASSIGN || scan->currentTokenType() == SEMI) {
 		if (scan->currentTokenType() == EQUALASSIGN) {
 			scan->advance();
 			decl->setValue(rdpBooleanExprA());
+			if (scan->currentTokenType() == SEMI) {
+				scan->advance();
+			}
+			else {
+				printError("ASTDeclaration04", "Expected SEMI", scan->getLine());
+				scan->advance();
+			}
+		}
+		else {
+			scan->advance();
 		}
 	}
 	else {
-		printError("ASTDeclaration03", "Expected EQL or SEMI", scan->getLine());
+		printError("ASTDeclaration03", "Expected or SEMI", scan->getLine());
 		scan->advance();
 	}
 	return decl;

@@ -4,10 +4,17 @@ name(float x, float y, float z)
     s = (x);
     s = (x + y);
     s = (x + y) * z;
+    s = (x - y) / z;
     if(x > y)
     {
         s = x;
         x = y;
+        x = y % z;
+        y = x / z;
+        string a = x + y;
+        float b = x + y;
+        float x = (x + y) * z;
+        string y;
     }
     while(x > y)
     {
