@@ -107,52 +107,52 @@ class ASTBooleanExprA : public ASTNode
 {
 public:
 	void setLeftBoolB(ASTBooleanExprB* leftBoolB);
-	void setRightBoolB(ASTBooleanExprB* rightBoolB);
-	void setOp(string op);
+	void addRightBoolB(ASTBooleanExprB* rightBoolB);
+	void addOp(string op);
 	void print(int depth);
 private:
 	ASTBooleanExprB* leftBoolB;
-	ASTBooleanExprB* rightBoolB;
-	string op;
+	vector<ASTBooleanExprB*> rightBoolB;
+	vector<string> ops;
 };
 
 class ASTBooleanExprB : public ASTNode
 {
 public:
 	void setLeftTerm(ASTTerm* leftTerm);
-	void setRightTerm(ASTTerm* rightTerm);
-	void setOp(string op);
+	void addRightTerm(ASTTerm* rightTerm);
+	void addOp(string op);
 	void print(int depth);
 private:
 	ASTTerm* leftTerm;
-	ASTTerm* rightTerm;
-	string op;
+	vector<ASTTerm*> rightTerm;
+	vector<string> ops;
 };
 
 class ASTTerm : public ASTNode
 {
 public:
 	void setLeftExpr(ASTExpr* leftExpr);
-	void setRightExpr(ASTExpr* rightExpr);
-	void setOp(string op);
+	void addRightExpr(ASTExpr* rightExpr);
+	void addOp(string op);
 	void print(int depth);
 private:
 	ASTExpr* leftExpr;
-	ASTExpr* rightExpr;
-	string op;
+	vector<ASTExpr*> rightExpr;
+	vector<string> ops;
 };
 
 class ASTExpr : public ASTNode
 {
 public:
 	void setLeftFactor(ASTFactor* leftFactor);
-	void setRightFactor(ASTFactor* rightFactor);
-	void setOp(string op);
+	void addRightFactor(ASTFactor* rightFactor);
+	void addOp(string op);
 	void print(int depth);
 private:
 	ASTFactor* leftFactor;
-	ASTFactor* rightFactor;
-	string op;
+	vector<ASTFactor*> rightFactor;
+	vector<string> ops;
 };
 
 class ASTFactor : public ASTNode
@@ -180,10 +180,12 @@ class ASTIf : public ASTNode
 public:
 	void setBooleanExprA(ASTBooleanExprA* boolExprA);
 	void setStatement(ASTStatement* stmt);
+	void setBlockStatement(bool type);
 	void print(int depth);
 private:
 	ASTBooleanExprA* boolExprA;
 	ASTStatement* stmt;
+	bool isBlockStatement;
 };
 
 class ASTWhile : public ASTNode
@@ -191,10 +193,12 @@ class ASTWhile : public ASTNode
 public:
 	void setBooleanExprA(ASTBooleanExprA* boolExprA);
 	void setStatement(ASTStatement* stmt);
+	void setBlockStatement(bool type);
 	void print(int depth);
 private:
 	ASTBooleanExprA* boolExprA;
 	ASTStatement* stmt;
+	bool isBlockStatement;
 };
 
 class ASTFunctionCall : public ASTNode

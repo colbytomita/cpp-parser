@@ -8,18 +8,33 @@ name(float x, float y, float z)
     if(x > y)
     {
         s = x;
+        s = y;
+        if (x > z)
+        {
+            s = x;
+            s = z;
+        }
+        if (y > x)
+            s = y;
+    }
+        s = x;
         x = y;
         x = y % z;
         y = x / z;
-        string a = x + y;
+        string a = x + y + z + c;
+        float v = x * y * z * c;
+        float b = x / y / z / c;
+        float n = x - y - z - c;
+        float m = x % y % z % c;
+        float l = x + y - z * r / c % x;
         float b = x + y;
         float x = (x + y) * z;
-        string y;
-    }
-    while(x > y)
-    {
+        y = x | y | z & c;
+        string y = 1;
+        y = x | y;
+    while(x | y & c)
         s = x;
-    }
+        float x = (x + y) * z + 1;
 
 }
 

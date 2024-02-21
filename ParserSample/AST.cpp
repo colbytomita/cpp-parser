@@ -57,14 +57,14 @@ void ASTBooleanExprA::setLeftBoolB(ASTBooleanExprB* left_in)
 	leftBoolB = left_in;
 }
 
-void ASTBooleanExprA::setRightBoolB(ASTBooleanExprB* right_in)
+void ASTBooleanExprA::addRightBoolB(ASTBooleanExprB* right_in)
 {
-	rightBoolB = right_in;
+	rightBoolB.push_back(right_in);
 }
 
-void ASTBooleanExprA::setOp(string op_in)
+void ASTBooleanExprA::addOp(string op_in)
 {
-	op = op_in;
+	ops.push_back(op_in);
 }
 
 void ASTBooleanExprB::setLeftTerm(ASTTerm* left_in)
@@ -72,14 +72,14 @@ void ASTBooleanExprB::setLeftTerm(ASTTerm* left_in)
 	leftTerm = left_in;
 }
 
-void ASTBooleanExprB::setRightTerm(ASTTerm* right_in)
+void ASTBooleanExprB::addRightTerm(ASTTerm* right_in)
 {
-	rightTerm = right_in;
+	rightTerm.push_back(right_in);
 }
 
-void ASTBooleanExprB::setOp(string op_in)
+void ASTBooleanExprB::addOp(string op_in)
 {
-	op = op_in;
+	ops.push_back(op_in);
 }
 
 void ASTTerm::setLeftExpr(ASTExpr* left_in)
@@ -87,14 +87,14 @@ void ASTTerm::setLeftExpr(ASTExpr* left_in)
 	leftExpr = left_in;
 }
 
-void ASTTerm::setRightExpr(ASTExpr* right_in)
+void ASTTerm::addRightExpr(ASTExpr* right_in)
 {
-	rightExpr = right_in;
+	rightExpr.push_back(right_in);
 }
 
-void ASTTerm::setOp(string op_in)
+void ASTTerm::addOp(string op_in)
 {
-	op = op_in;
+	ops.push_back(op_in);
 }
 
 void ASTExpr::setLeftFactor(ASTFactor* left_in)
@@ -102,14 +102,14 @@ void ASTExpr::setLeftFactor(ASTFactor* left_in)
 	leftFactor = left_in;
 }
 
-void ASTExpr::setRightFactor(ASTFactor* right_in)
+void ASTExpr::addRightFactor(ASTFactor* right_in)
 {
-	rightFactor = right_in;
+	rightFactor.push_back(right_in);
 }
 
-void ASTExpr::setOp(string op_in)
+void ASTExpr::addOp(string op_in)
 {
-	op = op_in;
+	ops.push_back(op_in);
 }
 
 void ASTFactor::setBoolA(ASTBooleanExprA* bool_in)
@@ -137,6 +137,11 @@ void ASTIf::setStatement(ASTStatement* stmt_in)
 	stmt = stmt_in;
 }
 
+void ASTIf::setBlockStatement(bool isBlockStatement_in)
+{
+	isBlockStatement = isBlockStatement_in;
+}
+
 void ASTWhile::setBooleanExprA(ASTBooleanExprA* bool_in)
 {
 	boolExprA = bool_in;
@@ -145,6 +150,11 @@ void ASTWhile::setBooleanExprA(ASTBooleanExprA* bool_in)
 void ASTWhile::setStatement(ASTStatement* stmt_in)
 {
 	stmt = stmt_in;
+}
+
+void ASTWhile::setBlockStatement(bool isBlockStatement_in)
+{
+	isBlockStatement = isBlockStatement_in;
 }
 
 void ASTFunctionCall::setName(string name_in)
@@ -246,57 +256,41 @@ void ASTAssign::print(int depth)
 
 void ASTBooleanExprA::print(int depth)
 {
-	if (rightBoolB != NULL)
+	leftBoolB->print(depth);
+	for (int i = 0; i < rightBoolB.size(); i++)
 	{
-		leftBoolB->print(depth);
-		cout << " " << op << " ";
-		rightBoolB->print(depth);
-	}
-	else
-	{
-		leftBoolB->print(depth);
+		cout << " " << ops[i] << " ";
+		rightBoolB[i]->print(depth);
 	}
 }
 
 void ASTBooleanExprB::print(int depth)
 {
-	if (rightTerm != NULL)
+	leftTerm->print(depth);
+	for (int i = 0; i < rightTerm.size(); i++)
 	{
-		leftTerm->print(depth);
-		cout << " " << op << " ";
-		rightTerm->print(depth);
-	}
-	else
-	{
-		leftTerm->print(depth);
+		cout << " " << ops[i] << " ";
+		rightTerm[i]->print(depth);
 	}
 }
 
 void ASTTerm::print(int depth)
 {
-	if (rightExpr != NULL)
+	leftExpr->print(depth);
+	for (int i = 0; i < rightExpr.size(); i++)
 	{
-		leftExpr->print(depth);
-		cout << " " << op << " ";
-		rightExpr->print(depth);
-	}
-	else
-	{
-		leftExpr->print(depth);
+		cout << " " << ops[i] << " ";
+		rightExpr[i]->print(depth);
 	}
 }
 
 void ASTExpr::print(int depth)
 {
-	if (rightFactor != NULL)
+	leftFactor->print(depth);
+	for (int i = 0; i < rightFactor.size(); i++)
 	{
-		leftFactor->print(depth);
-		cout << " " << op << " ";
-		rightFactor->print(depth);
-	}
-	else
-	{
-		leftFactor->print(depth);
+		cout << " " << ops[i] << " ";
+		rightFactor[i]->print(depth);
 	}
 }
 
@@ -319,12 +313,13 @@ void ASTElement::print(int depth)
 	cout << value;
 }
 
-void ASTIf::print(int depth)	// this shouldnt have curly braces, look at the block statements
+void ASTIf::print(int depth)
 {
 	cout << "if (";
 	boolExprA->print(depth);
 	cout << ")\n";
-	
+	if(!isBlockStatement)
+		cout << "    ";
 	stmt->print(depth);
 	
 }
@@ -334,6 +329,8 @@ void ASTWhile::print(int depth)
 	cout << "while (";
 	boolExprA->print(depth);
 	cout << ")\n";
+	if(!isBlockStatement)
+		cout << "    ";
 	stmt->print(depth);
 }
 

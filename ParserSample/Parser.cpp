@@ -178,11 +178,9 @@ ASTStatement* Parser::rdpStatement() {
 	if (scan->currentTokenType() == STRING) {
 		if (scan->nextTokenType() == LPAREN) {	// this handles if, while, and function calls
 			if (scan->currentTokenString() == "if") {
-			// scan->advance();
 			stmt->setStmt(rdpIf());
 			}
 			else if (scan->currentTokenString() == "while") {
-				// scan->advance();
 				stmt->setStmt(rdpWhile());
 			}
 			else {
@@ -242,10 +240,10 @@ ASTAssign* Parser::rdpAssign() {
 ASTBooleanExprA* Parser::rdpBooleanExprA() {
 	ASTBooleanExprA* boolA = new ASTBooleanExprA();
 	boolA->setLeftBoolB(rdpBooleanExprB());
-	if (scan->currentTokenType() == OR || scan->currentTokenType() == AND) {
-		boolA->setOp(scan->currentTokenString());
+	while (scan->currentTokenType() == OR || scan->currentTokenType() == AND) {
+		boolA->addOp(scan->currentTokenString());
 		scan->advance();
-		boolA->setRightBoolB(rdpBooleanExprB());
+		boolA->addRightBoolB(rdpBooleanExprB());
 	}
 	return boolA;
 }
@@ -253,10 +251,10 @@ ASTBooleanExprA* Parser::rdpBooleanExprA() {
 ASTBooleanExprB* Parser::rdpBooleanExprB() {
 	ASTBooleanExprB* boolB = new ASTBooleanExprB();
 	boolB->setLeftTerm(rdpTerm());
-	if (scan->currentTokenType() == EE || scan->currentTokenType() == GR || scan->currentTokenType() == GRE) {
-		boolB->setOp(scan->currentTokenString());
+	while (scan->currentTokenType() == EE || scan->currentTokenType() == GR || scan->currentTokenType() == GRE) {
+		boolB->addOp(scan->currentTokenString());
 		scan->advance();
-		boolB->setRightTerm(rdpTerm());
+		boolB->addRightTerm(rdpTerm());
 	}
 	return boolB;
 }
@@ -264,10 +262,10 @@ ASTBooleanExprB* Parser::rdpBooleanExprB() {
 ASTTerm* Parser::rdpTerm() {
 	ASTTerm* term = new ASTTerm();
 	term->setLeftExpr(rdpExpr());
-	if (scan->currentTokenType() == PLUS || scan->currentTokenType() == MINUS) {
-		term->setOp(scan->currentTokenString());
+	while (scan->currentTokenType() == PLUS || scan->currentTokenType() == MINUS) {
+		term->addOp(scan->currentTokenString());
 		scan->advance();
-		term->setRightExpr(rdpExpr());
+		term->addRightExpr(rdpExpr());
 	}
 	return term;
 }
@@ -275,10 +273,10 @@ ASTTerm* Parser::rdpTerm() {
 ASTExpr* Parser::rdpExpr() {
 	ASTExpr* expr = new ASTExpr();
 	expr->setLeftFactor(rdpFactor());
-	if (scan->currentTokenType() == MULTIPLY || scan->currentTokenType() == DIVIDE || scan->currentTokenType() == MOD) {
-		expr->setOp(scan->currentTokenString());
+	while (scan->currentTokenType() == MULTIPLY || scan->currentTokenType() == DIVIDE || scan->currentTokenType() == MOD) {
+		expr->addOp(scan->currentTokenString());
 		scan->advance();
-		expr->setRightFactor(rdpFactor());
+		expr->addRightFactor(rdpFactor());
 	}
 	return expr;
 }
@@ -334,6 +332,12 @@ ASTIf* Parser::rdpIf() {
 		printError("ASTIf02", "Expected RPAREN", scan->getLine());
 		scan->advance();
 	}
+	if (scan->currentTokenType() == LBRACE) {
+		ifStmt->setBlockStatement(true);
+	}
+	else {
+		ifStmt->setBlockStatement(false);
+	}
 	ifStmt->setStatement(rdpStatement());
 	return ifStmt;
 }
@@ -355,6 +359,12 @@ ASTWhile* Parser::rdpWhile() {
 	else {
 		printError("ASTWhile02", "Expected RPAREN", scan->getLine());
 		scan->advance();
+	}
+	if (scan->currentTokenType() == LBRACE) {
+		whileStmt->setBlockStatement(true);
+	}
+	else {
+		whileStmt->setBlockStatement(false);
 	}
 	whileStmt->setStatement(rdpStatement());
 	return whileStmt;
